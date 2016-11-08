@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>devQA :: Quiz</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:900,700,600,400,300">
+
+	<link rel="stylesheet" type="text/css" href="assets/style/reset.css">
+	<link rel="stylesheet" type="text/css" href="assets/style/fonts/galano/galano.css">
+	<link rel="stylesheet" type="text/css" href="assets/style/fonts/icon-12/icon-12.css">
+	<link rel="stylesheet" type="text/css" href="assets/style/fonts/icon-16/icon-16.css">
+	<link rel="stylesheet" type="text/css" href="assets/style/main.css">
+
+</head>
+<body class="blue">
+	<div class="content">
+		<div class="wrapper ranking-offset flex-column-center-center">
+			<header class="grid-quiz">
+				<div class="content-header question">
+					<h1 id="validation"></h1>
+					<h1 id="title">What does the fox say?</h1>
+				</div>
+			</header>
+
+			<main class="grid-quiz question">
+				<section class="half">
+					<div onclick="success(this)" class="content-body clickable flex-column-center-center">
+						<h3>WhooHo</h3>
+						<p>The fox is a lonely wolf that says wolfy things</p>
+					</div>	
+				</section>
+
+				<section class="half">
+					<div onclick="error(this)" class="content-body clickable flex-column-center-center">
+						<h3>Yay Yay!</h3>
+						<p>The fox is a lonely wolf that says wolfy things</p>
+					</div>
+				</section>
+			</main>
+		</div>
+
+		<div id="ranking" class="ranking">
+			<header>
+				<div class="content-header">
+					<a href="#ranking"><h1>Ranking</h1></a>
+				</div>
+			</header>
+			
+			<table>
+				<thead>
+					<tr>
+						<th width="10%">
+							#
+						</th>
+						<th width="60%">
+							Name
+						</th>
+						<th width="30%">
+							Points
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>1</td>
+						<td>Barack Obama</td>
+						<td>3929319</td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>John Malkovich</td>
+						<td>3830123</td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>Martha Stewart</td>
+						<td>3749040</td>
+					</tr>
+					<tr>
+						<td>4</td>
+						<td>Morgan Freeman</td>
+						<td>3684938</td>
+					</tr>
+					<tr>
+						<td>5</td>
+						<td>Xuxa Meneghel</td>
+						<td>3508403</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		const body = document.querySelector('body');
+		const validation = document.getElementById('validation');
+
+		function success(event) {
+			validation.innerHTML = 'Correct!';
+			handleAnswer(event, 'correct');
+		}
+
+		function error(event) {
+			validation.innerHTML = 'Wrong :(';
+			handleAnswer(event, 'error');
+		}
+
+		function handleAnswer(event, className){
+			body.classList.add(className);
+			const card = event.parentNode;
+			card.classList.add(className);
+			const otherCard = card.parentNode.querySelector('.half:not(.' + className + ')');
+			otherCard.style.display = 'none';
+		}
+	</script>
+</body>
+</html>
