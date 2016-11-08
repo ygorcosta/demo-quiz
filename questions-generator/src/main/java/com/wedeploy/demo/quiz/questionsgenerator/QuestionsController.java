@@ -25,18 +25,26 @@ public class QuestionsController {
 
 		List<Question> questionList = new ArrayList<>();
 
-		questionService.getQuestionsAndAnswers().forEach((List<String> data) -> {
+		questionService.getQuestionsAndAnswers().forEach((List<?> data) -> {
 			List<Answer> answers = new ArrayList<>(data.size() - 1);
 
 			for (int i = 1; i < data.size(); i++) {
-				answers.add(new Answer(data.get(i), i == 1));
+				List<String> arrayAndDescription = (List<String>) data.get(i);
+
+				answers.add(new Answer(
+					arrayAndDescription.get(0),
+					arrayAndDescription.get(1),
+					i == 1));
 			}
 
 			if (random) {
 				Collections.shuffle(answers);
 			}
 
-			questionList.add(new Question(data.get(0), answers));
+			int id = questionService.getNextQuestionId();
+
+			questionList.add(
+				new Question(id, (String)data.get(0), answers));
 		});
 
 		if (random) {
