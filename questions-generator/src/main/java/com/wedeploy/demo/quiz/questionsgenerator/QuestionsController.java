@@ -41,7 +41,10 @@ public class QuestionsController {
 				Collections.shuffle(answers);
 			}
 
-			questionList.add(new Question((String)data.get(0), answers));
+			int id = questionService.getNextQuestionId();
+
+			questionList.add(
+				new Question(id, (String)data.get(0), answers));
 		});
 
 		if (random) {
