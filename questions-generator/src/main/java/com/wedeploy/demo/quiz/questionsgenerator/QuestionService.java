@@ -13,16 +13,10 @@ import java.util.List;
 @Service
 public class QuestionService {
 
-	private int id;
-
 	@Value(value = "classpath:qa.json")
 	private Resource questionsJson;
 
-	private List<List<String>> questionsAndAnswers;
-
-	public QuestionService() {
-		this.id = 100;
-	}
+	private List<List<?>> questionsAndAnswers;
 
 	@PostConstruct
 	public void init() throws IOException {
@@ -38,14 +32,8 @@ public class QuestionService {
 	/**
 	 * Returns predefined list of questions and answers.
 	 */
-	public List<List<String>> getQuestionsAndAnswers() {
+	public List<List<?>> getQuestionsAndAnswers() {
 		return questionsAndAnswers;
 	}
 
-	/**
-	 * Returns the next question id.
-	 */
-	public int getNextQuestionId() {
-		return id++;
-	}
 }

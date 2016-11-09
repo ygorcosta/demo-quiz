@@ -25,6 +25,8 @@ public class QuestionsController {
 
 		List<Question> questionList = new ArrayList<>();
 
+		QuestionIdGenerator questionIdGenerator = new QuestionIdGenerator(100);
+
 		questionService.getQuestionsAndAnswers().forEach((List<?> data) -> {
 			List<Answer> answers = new ArrayList<>(data.size() - 1);
 
@@ -41,7 +43,7 @@ public class QuestionsController {
 				Collections.shuffle(answers);
 			}
 
-			int id = questionService.getNextQuestionId();
+			int id = questionIdGenerator.nextId();
 
 			questionList.add(
 				new Question(id, (String)data.get(0), answers));
