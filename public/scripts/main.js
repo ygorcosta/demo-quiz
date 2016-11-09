@@ -17,6 +17,24 @@ function main() {
 			questions = clientResponse.body();
 			showNextQuestion();
 	    });
+
+	WeDeploy
+		.data('http://data.' + DOMAIN)
+		.get('questionStats')
+		.then(function(allQuestionStats) {
+  			qdata = allQuestionStats;
+  			updateRanking(allQuestionStats);
+		});
+
+	WeDeploy
+		.data('http://data.' + DOMAIN)
+		.watch('questionStats')
+		.on('changes', function(allQuestionStats){
+		   updateRanking(allQuestionStats);
+		})
+		.on('fail', function(error){
+		   console.log(error);
+		});
 }
 
 function showNextQuestion() {
@@ -154,12 +172,38 @@ function incrementQuestionStats(questionId, correct) {
 		});
 }
 
-
-
 function showNextButton(userStats) {
-	console.log("Next Button!");
-	console.log(userStats);
 	// todo show next button
+}
+
+function updateRanking(questionStats) {
+	var sortedOks = sortQuestions(questionStats, 'oks');
+	for (qs of sortedOks) {
+		console.log(findQuestionById(qs.id).text);
+	}
+	console.log("-------------------");
+	var sortedErrs = sortQuestions(questionStats, 'errors');
+	for (qs of sortedErrs) {
+		console.log(findQuestionById(qs.id).text);
+	}
+}
+
+function sortQuestions(questionStats, property) {
+	function compare(a,b) {
+        if (a[property] < b[property]) return -1;
+        if (a[property] > b[property]) return 1;
+    	return 0;
+    }
+    return questionStats.sort(compare).reverse();
+}
+
+function findQuestionById(id) {
+	for (q of questions) {
+		if (q.id == id) {
+			return q;
+		}
+	}
+	return null;
 }
 
 main();
