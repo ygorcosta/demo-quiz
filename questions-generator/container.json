@@ -1,4 +1,7 @@
 {
 	"id": "questions-generator",
-	"type": "wedeploy/java"
+	"type": "wedeploy/java",
+    "hooks": {
+        "build": "./gradlew clean build"
+    }
 }
