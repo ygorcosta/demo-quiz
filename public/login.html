@@ -80,7 +80,8 @@
 
     <script src="http://cdn.wedeploy.com/api/latest/wedeploy.js"></script>
     <script>
-    	var auth = WeDeploy.auth('auth.demo-quiz.wedeploy.me');
+    	const DOMAIN = window.location.hostname.split(".").slice(-3).join(".");
+    	var auth = WeDeploy.auth('auth.' + DOMAIN);
 
     	function signInWithEmailAndPassword() {
     		auth.signInWithEmailAndPassword(signIn.email.value, signIn.password.value)
