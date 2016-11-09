@@ -8,33 +8,42 @@ var questions;
 var qndx = 0;
 
 function main() {
-	WeDeploy
-	    .url('http://questions-generator.' + DOMAIN)
-	    .path('questions')
-	    .param('random', 'true')
-	    .get()
-	    .then(function(clientResponse) {
-			questions = clientResponse.body();
-			showNextQuestion();
-	    });
+	var currentUser = WeDeploy.auth('auth.' + DOMAIN).currentUser;
 
-	WeDeploy
-		.data('http://data.' + DOMAIN)
-		.get('questionStats')
-		.then(function(allQuestionStats) {
-  			qdata = allQuestionStats;
-  			updateRanking(allQuestionStats);
-		});
+	console.log(currentUser);
 
-	WeDeploy
-		.data('http://data.' + DOMAIN)
-		.watch('questionStats')
-		.on('changes', function(allQuestionStats){
-		   updateRanking(allQuestionStats);
-		})
-		.on('fail', function(error){
-		   console.log(error);
-		});
+	if (currentUser) {
+		WeDeploy
+		    .url('questions-generator.' + DOMAIN)
+		    .path('questions')
+		    .param('random', 'true')
+		    .get()
+		    .then(function(clientResponse) {
+				questions = clientResponse.body();
+				showNextQuestion();
+		    });
+
+		WeDeploy
+			.data('data.' + DOMAIN)
+			.get('questionStats')
+			.then(function(allQuestionStats) {
+	  			qdata = allQuestionStats;
+	  			updateRanking(allQuestionStats);
+			});
+
+		WeDeploy
+			.data('data.' + DOMAIN)
+			.watch('questionStats')
+			.on('changes', function(allQuestionStats){
+			   updateRanking(allQuestionStats);
+			})
+			.on('fail', function(error){
+			   console.log(error);
+			});
+	}
+	else {
+		window.location = "/login.html";
+	}
 }
 
 function showNextQuestion() {
