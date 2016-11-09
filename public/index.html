@@ -20,25 +20,14 @@
 			<header class="grid-quiz">
 				<div class="content-header question">
 					<h1 id="validation"></h1>
-					<h1 id="title">What does the fox say?</h1>
+					<h1 id="title"></h1>
 				</div>
 			</header>
 
 			<main class="grid-quiz question">
-				<section class="half">
-					<div onclick="success(this)" class="content-body clickable flex-column-center-center">
-						<h3>WhooHo</h3>
-						<p>The fox is a lonely wolf that says wolfy things</p>
-					</div>	
-				</section>
-
-				<section class="half">
-					<div onclick="error(this)" class="content-body clickable flex-column-center-center">
-						<h3>Yay Yay!</h3>
-						<p>The fox is a lonely wolf that says wolfy things</p>
-					</div>
-				</section>
 			</main>
+
+			<div id="next" onclick="showNextQuestion();">NEXT</div>
 		</div>
 
 		<div id="ranking" class="ranking">
@@ -47,7 +36,7 @@
 					<a href="#ranking"><h1>Ranking</h1></a>
 				</div>
 			</header>
-			
+
 			<table>
 				<thead>
 					<tr>
@@ -65,12 +54,12 @@
 				<tbody>
 					<tr>
 						<td>1</td>
-						<td>Barack Obama</td>
+						<td>John Malkovich</td>
 						<td>3929319</td>
 					</tr>
 					<tr>
 						<td>2</td>
-						<td>John Malkovich</td>
+						<td>Barack Obama</td>
 						<td>3830123</td>
 					</tr>
 					<tr>
@@ -93,27 +82,8 @@
 		</div>
 	</div>
 
-	<script type="text/javascript">
-		const body = document.querySelector('body');
-		const validation = document.getElementById('validation');
+	<script src="http://cdn.wedeploy.com/api/latest/wedeploy.js"></script>
+	<script type="text/javascript" src="scripts/main.js"></script>
 
-		function success(event) {
-			validation.innerHTML = 'Correct!';
-			handleAnswer(event, 'correct');
-		}
-
-		function error(event) {
-			validation.innerHTML = 'Wrong :(';
-			handleAnswer(event, 'error');
-		}
-
-		function handleAnswer(event, className){
-			body.classList.add(className);
-			const card = event.parentNode;
-			card.classList.add(className);
-			const otherCard = card.parentNode.querySelector('.half:not(.' + className + ')');
-			otherCard.style.display = 'none';
-		}
-	</script>
 </body>
 </html>
