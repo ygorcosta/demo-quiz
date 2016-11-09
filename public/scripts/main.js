@@ -71,6 +71,22 @@ function incrementUserStats(userId, correct) {
 	WeDeploy
 		.data('data.' + DOMAIN)
 		.get('userStats/' + userId)
+		.then(function(stats) {
+			if (correct) {
+				stats.oks += 1;
+			}
+			else {
+				stats.errors += 1;
+			}
+
+			return WeDeploy
+				.data('data.' + DOMAIN)
+				.update('userStats/' + userId, stats)
+				.then(function(userStats) {
+					// todo userStats == ""?
+					showNextButton(stats);
+				});
+		})
 		.catch(function(err) {
 			if (err.code == 404) {
 				var stats = {
@@ -86,36 +102,20 @@ function incrementUserStats(userId, correct) {
 					stats.errors += 1;
 				}
 
-				WeDeploy
+				return WeDeploy
 					.data('data.' + DOMAIN)
 					.create('userStats', stats)
-					.then(function(questions) {
-						showNextButton();
+					.then(function(userStats) {
+						showNextButton(userStats);
 					});
 			}
-		})
-		.then(function(stats) {
-			if (stats == undefined) {
-				return;
-			}
-			if (correct) {
-				stats.oks += 1;
-			}
-			else {
-				stats.errors += 1;
-			}
-
-			WeDeploy
-				.data('data.' + DOMAIN)
-				.update('userStats/' + userId, stats)
-				.then(function(questions) {
-					showNextButton();
-				});
+			throw err;
 		});
 }
 
-function showNextButton() {
+function showNextButton(userStats) {
 	console.log("Next Button!");
+	console.log(userStats);
 	// todo show next button
 }
 
