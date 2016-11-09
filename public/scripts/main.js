@@ -65,6 +65,8 @@ function handleAnswer(event, isCorrect) {
 	otherCard.style.display = 'none';
 
 	incrementUserStats('userNN', isCorrect);
+	var qid = questions[qndx].id;
+	incrementQuestionStats(qid, isCorrect);
 }
 
 function incrementUserStats(userId, correct) {
@@ -112,6 +114,47 @@ function incrementUserStats(userId, correct) {
 			throw err;
 		});
 }
+
+function incrementQuestionStats(questionId, correct) {
+	WeDeploy
+		.data('data.' + DOMAIN)
+		.get('questionStats/' + questionId)
+		.then(function(stats) {
+			if (correct) {
+				stats.oks += 1;
+			}
+			else {
+				stats.errors += 1;
+			}
+
+			return WeDeploy
+				.data('data.' + DOMAIN)
+				.update('questionStats/' + questionId, stats);
+		})
+		.catch(function(err) {
+			if (err.code == 404) {
+				var stats = {
+					'id' : questionId,
+					'oks' : 0,
+					'errors' : 0,
+				}
+
+				if (correct) {
+					stats.oks += 1;
+				}
+				else {
+					stats.errors += 1;
+				}
+
+				return WeDeploy
+					.data('data.' + DOMAIN)
+					.create('questionStats', stats);
+			}
+			throw err;
+		});
+}
+
+
 
 function showNextButton(userStats) {
 	console.log("Next Button!");
