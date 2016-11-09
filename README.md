@@ -1,2 +1,3 @@
-# demo-quiz
-Quiz demo
+# devQA
+
+This is a online Quiz implemented with WeDeploy™.
