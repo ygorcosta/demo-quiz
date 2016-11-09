@@ -36,7 +36,7 @@
 						<label>Name</label>
 						<input type="text" placeholder="Your full name" class="form-control" name="name" value="" maxlength="100" autofocus="" required="">
 					</div>
-					
+
 					<div class="form-group">
 						<label>Email</label>
 						<input type="email" placeholder="youremail@company.com" class="form-control" name="email" value="" maxlength="100" autofocus="" required="" />
@@ -62,7 +62,7 @@
     <script src="http://cdn.wedeploy.com/api/latest/wedeploy.js"></script>
     <script>
     	function submitForm() {
-    		WeDeploy.auth('auth.XXX.wedeploy.io')
+    		WeDeploy.auth('auth.demo-quiz.wedeploy.me')
     			.createUser({
     				email: signUp.email.value,
     				name: signUp.name.value,
