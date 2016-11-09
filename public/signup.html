@@ -60,24 +60,6 @@
 	</main>
 
     <script src="http://cdn.wedeploy.com/api/latest/wedeploy.js"></script>
-    <script>
-	    const DOMAIN = window.location.hostname.split(".").slice(-3).join(".");
-    	function submitForm() {
-    		WeDeploy.auth('auth.' + DOMAIN)
-    			.createUser({
-    				email: signUp.email.value,
-    				name: signUp.name.value,
-    				password: signUp.password.value
-    			})
-    			.then(function(user) {
-    				alert('Sign-up successfully.');
-    				location.href = '/';
-    			})
-    			.catch(function() {
-    				alert('Sign-up failed. Try another email.');
-    				signUp.reset();
-    			});
-    	}
-    </script>
+    <script type="text/javascript" src="scripts/signup.js"></script>
 </body>
 </html>
