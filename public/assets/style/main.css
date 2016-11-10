@@ -458,6 +458,7 @@ QUIZ
 
 .wrapper {
   height: 100vh;
+  position: relative;
 }
 
 @media (max-width: 1024px) {
@@ -474,6 +475,7 @@ QUIZ
 @media (max-width: 1024px) {
   .wrapper footer {
     padding-top: 24px;
+    height: 80px;
   }
 }
 
@@ -523,6 +525,12 @@ QUIZ
   max-width: 680px;
   padding: 0 20px;
   margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .grid-quiz {
+    padding: 0;
+  }
 }
 
 .grid-quiz #validation {
@@ -627,6 +635,7 @@ body.error #title {
   .grid-quiz.question {
     width: calc(100% - 24px);
     padding: 0 12px;
+    height: 200px;
   }
 }
 
@@ -643,6 +652,7 @@ body.error #title {
 @media (max-width: 600px) {
   .grid-quiz .half {
     width: calc(50% - 6px);
+    height: 200px;
   }
 
   .grid-quiz.question .half .content-body {
@@ -869,6 +879,112 @@ table tr:last-child td:first-child {
 table tr:last-child td:last-child {
   border-bottom-right-radius: 4px;
 }
+
+/* --------------------------------
+
+MENU - AVATAR / LOGOUT
+
+-------------------------------- */
+.menu {
+  position: absolute;
+  right: 20px;
+  top: 12px;
+}
+
+.menu .avatar {
+  float: left;
+  position: relative;
+  margin-right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  background: none;
+  border: 0px solid #fff;
+}
+
+.menu .avatar img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  z-index: 10;
+  border-radius: 50%;
+}
+
+.menu .avatar img[src=""] {
+   display: none;
+}
+
+.menu .avatar #userInitials {
+  background: #082947;
+  color: white;
+  font-family: 'Galano Bold', sans-serif;
+  text-align: center;
+  display: block;
+  font-size: 14px;
+  line-height: 38px;
+  text-transform: uppercase;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  z-index: 9;
+  border-radius: 50%;
+}
+
+.menu .logout {
+  float: left;
+  position: relative;
+  width: 36px;
+  height: 36px;
+  text-align: center;
+  background: white;
+  border-radius: 50%;
+  display: block;
+  box-shadow: none;
+  border: 0px solid #fff;
+  cursor: pointer;
+  padding: 0;
+}
+
+.menu .logout span {
+  color: #00a4ff;
+  line-height: 36px;
+  font-size: 12px;
+  padding: 0 0 0 3px;
+}
+
+.menu .avatar .btn-tooltip,
+.menu .logout .btn-tooltip {
+  -webkit-transition: opacity 0.3s ease-in-out;
+  -o-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+  position: absolute;
+  top: calc(100% + 6px);
+  height: 36px;
+  border-radius: 4px;
+  padding: 0 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: #0e141a;
+  line-height: 36px;
+  box-shadow: 0 10px 20px rgba(14, 20, 26, 0.1);
+  white-space: nowrap;
+}
+
+.menu .avatar:hover .btn-tooltip,
+.menu .logout:hover .btn-tooltip {
+  opacity: 1;
+}
+
 
 /* --------------------------------
 
