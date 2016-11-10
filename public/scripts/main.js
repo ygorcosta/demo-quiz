@@ -122,8 +122,14 @@ function handleAnswer(event, isCorrect) {
 
 	incrementUserStats('userNN', isCorrect);
 
-	const qid = questions[qndx].id;
-	incrementQuestionStats(qid, isCorrect);
+  let idxQuestion = questions[qndx];
+
+  // TODO: If questions = 0. Show something different on UI.
+  if (qndx > 0) {
+    idxQuestion = questions[qndx - 1]
+  }
+
+	incrementQuestionStats(idxQuestion.id, isCorrect);
 }
 
 function incrementUserStats(userId, correct) {
