@@ -1,156 +1,134 @@
 'use strict';
 
 const DOMAIN = window.location.hostname.split(".").slice(-3).join(".");
+const ELEMS = {
+  title: document.querySelector('.content-header.question #title'),
+  body: document.querySelector('body'),
+  grid: document.querySelector('.grid-quiz.question'),
+  footer: document.querySelector('footer'),
 
-const title = document.querySelector('.content-header.question #title');
-const grid = document.querySelector('.grid-quiz.question');
+  validation: document.getElementById('validation'),
+  nextButton: document.querySelector('#next'),
 
-const body = document.querySelector('body');
-const validation = document.getElementById('validation');
-const footer = document.querySelector('footer');
-const nextButton = document.querySelector('#next');
+  userPhoto: document.getElementById('userPhoto'),
+  userName: document.getElementById('userName'),
+  userInitials: document.getElementById('userName'),
+};
 
-var questions;
-var qndx = 0;
-var currentUserId;
+let auth = WeDeploy.auth(`auth.${DOMAIN}`);
+let data = WeDeploy.data(`data.${DOMAIN}`);
+let generator = WeDeploy.url(`generator.${DOMAIN}`);
+
+let questions = [];
+let qndx = 0;
+
 
 function main() {
-	var currentUser = WeDeploy.auth('auth.' + DOMAIN).currentUser;
+  let { currentUser } = auth;
 
-	if (currentUser) {
-		currentUserId = currentUser.id;
-		WeDeploy
-      .url('generator.' + DOMAIN)
-      .path('questions')
-      .param('random', 'true')
-      .get()
-      .then(function(clientResponse) {
-        questions = clientResponse.body();
-        showNextQuestion();
-      });
+  if (!currentUser) {
+    window.location = "/login";
+  }
 
-    const data = WeDeploy.data('data.' + DOMAIN)
+  getQuestions()
+    .then(showNextQuestion);
 
-		data.get('questionStats')
-			.then((allQuestionStats) => {
-	  			updateRanking(allQuestionStats);
-			});
+  if (currentUser.photoUrl) {
+    ELEMS.userPhoto.src = currentUser.photoUrl;
+  }
 
-	  data.watch('questionStats')
-			.on('changes',(allQuestionStats) => updateRanking(allQuestionStats))
-			.on('fail', (error) => console.log(error));
-
-    console.log(currentUser);
-
-    if (currentUser.photoUrl) {
-      document.getElementById('userPhoto').src = currentUser.photoUrl;
-    }
-
-    if(currentUser.name) {
-      document.getElementById('userName').innerHTML = currentUser.name;
-      document.getElementById('userInitials').innerHTML = currentUser.name.charAt(0);
-    } else {
-      document.getElementById('userName').innerHTML = currentUser.email;
-      document.getElementById('userInitials').innerHTML = currentUser.email.charAt(0);
-    }
-
-	}
-	else {
-		window.location = "/login";
-	}
+  if(auth.currentUser.name) {
+    ELEMS.userName.innerHTML = currentUser.name;
+    ELEMS.userInitials.innerHTML = currentUser.name.charAt(0);
+  } else {
+    ELEMS.userName.innerHTML = currentUser.email;
+    ELEMS.userInitials.innerHTML = currentUser.email.charAt(0);
+  }
 }
 
 function signOut() {
-  WeDeploy.auth('auth.' + DOMAIN)
+  auth
     .signOut()
-    .then(function() {
-      location.href = 'login.html';
+    .then(() => {
+      location.href = '/login';
     });
 }
 
 function showNextQuestion() {
-	if (qndx == questions.length) {
-		qndx = 0;
-	}
+  if (qndx == questions.length) {
+    location.href = "/ranking";
+  }
 
-	let question = questions[qndx];
-	qndx = qndx + 1;
+  let question = questions[qndx++];
 
-	restartQuestionUI();
-
-	renderQuestion(question);
+  restartQuestionUI();
+  renderQuestion(question);
 }
 
 function restartQuestionUI() {
-	title.classList.remove('visible');
+  ELEMS.title.classList.remove('visible');
 
-	body.classList.remove('correct');
-	body.classList.remove('error');
+  ELEMS.body.classList.remove('correct');
+  ELEMS.body.classList.remove('error');
 
-	grid.innerHTML = '';
+  ELEMS.grid.innerHTML = '';
 
-	footer.classList.remove('visible');
+  ELEMS.footer.classList.remove('visible');
 }
 
 function renderQuestion(question) {
-	let title = document.querySelector('.content-header.question #title');
-	title.innerHTML = question.text;
-	title.classList.add('visible');
+  ELEMS.title.innerHTML = question.text;
+  ELEMS.title.classList.add('visible');
 
-	const grid = document.querySelector('.grid-quiz.question');
-	question.answers.forEach((answer) => renderAnswer(grid, answer));
+  question
+    .answers
+    .forEach((answer) => renderAnswer(ELEMS.grid, answer));
 }
 
 function renderAnswer(component, answer) {
-	component.innerHTML += '<section class="half">' +
-		'	<div onclick="' + (answer.correct ? 'success' : 'error') + '(this)" class="content-body clickable flex-column-center-center">' +
-		'		<h3>' + answer.text + '</h3>' +
-		'		<p>' + answer.description + '</p>' +
-		'	</div>' +
-		'</section>';
+  component.innerHTML += `
+    <section class="half">
+     <div onclick=" ${answer.correct ? 'success' : 'error'}(this)" class="content-body clickable flex-column-center-center">
+       <h3>${answer.text}</h3>
+       <p>${answer.description}</p>
+     </div>
+    </section>`;
 }
 
 function success(event) {
-	let validationTitle = validation.querySelector('h1');
-	validationTitle.innerHTML = 'Correct!';
+  let validationTitle = validation.querySelector('h1');
 
-	footer.classList.add('visible');
-
-	handleAnswer(event, true);
+  validationTitle.innerHTML = 'Correct!';
+  ELEMS.footer.classList.add('visible');
+  handleAnswer(event, true);
 }
 
 function error(event) {
+  let validationTitle = validation.querySelector('h1');
 
-	let validationTitle = validation.querySelector('h1');
-	validationTitle.innerHTML = 'Wrong :(';
-
-	footer.classList.add('visible');
-
-	handleAnswer(event, false);
+  validationTitle.innerHTML = 'Wrong :(';
+  ELEMS.footer.classList.add('visible');
+  handleAnswer(event, false);
 }
 
 function handleAnswerSubtitle (correct, stats) {
   let validationSubTitle = validation.querySelector('p');
-  if(correct)
-    validationSubTitle.innerHTML = 'This question was answered <span>' + stats.oks + '</span> times correctly.';
-  else
-    validationSubTitle.innerHTML = 'This question was answered <span>' + stats.errors + '</span> times wrong.';
 
+    validationSubTitle.innerHTML =
+    `This question was answered <span>${correct ? stats.oks : stats.errors}</span> times correctly.`;
 }
 
 function handleAnswer(event, isCorrect) {
-	const className = isCorrect ? 'correct' : 'error'
-	body.classList.add(className);
+  const className = isCorrect ? 'correct' : 'error'
+  ELEMS.body.classList.add(className);
 
-	const card = event.parentNode;
-	card.classList.add(className);
+  const card = event.parentNode;
+  card.classList.add(className);
 
-	const otherCard = card.parentNode.querySelector('.half:not(.' + className + ')');
-	otherCard.style.display = 'none';
+  const otherCard = card.parentNode.querySelector(`.half:not(.${className})`);
+  otherCard.style.display = 'none';
 
-	if (currentUserId != undefined) {
-		incrementUserStats(currentUserId, isCorrect);
-	}
+  incrementUserStats(auth.currentUser.id, isCorrect);
 
   let idxQuestion = questions[qndx];
 
@@ -159,144 +137,152 @@ function handleAnswer(event, isCorrect) {
     idxQuestion = questions[qndx - 1]
   }
 
-	incrementQuestionStats(idxQuestion.id, isCorrect);
+  incrementQuestionStats(idxQuestion.id, isCorrect);
 }
 
 function incrementUserStats(userId, correct) {
-	WeDeploy
-		.data('data.' + DOMAIN)
-		.get('userStats/' + userId)
-		.then(function(stats) {
-			if (correct) {
-				stats.oks += 1;
-			}
-			else {
-				stats.errors += 1;
-			}
-
-			return WeDeploy
-				.data('data.' + DOMAIN)
-				.update('userStats/' + userId, stats)
-				.then(function(userStats) {
-					// todo userStats == ""?
-					showNextButton(stats);
-				});
-		})
-		.catch(function(err) {
-			if (err.code == 404) {
-				let stats = {
-					'id' : userId,
-					'oks' : 0,
-					'errors' : 0,
-				}
-
-				if (correct) {
-					stats.oks += 1;
-				}
-				else {
-					stats.errors += 1;
-				}
-
-				return WeDeploy
-					.data('data.' + DOMAIN)
-					.create('userStats', stats)
-					.then(function(userStats) {
-						showNextButton(userStats);
-					});
-			}
-			throw err;
-		});
-}
-
-function incrementQuestionStats(questionId, correct) {
-	WeDeploy
-		.data('data.' + DOMAIN)
-		.get('questionStats/' + questionId)
-		.then(function(stats) {
-			if (correct) {
-				stats.oks += 1;
+  return data
+    .get(`userStats/${userId}`)
+    .then((stats) => {
+      if (correct) {
+        stats.oks += 1;
       }
       else {
         stats.errors += 1;
       }
 
+      return data
+        .update(`userStats/${userId}`, stats)
+        .then((userStats) => {
+          // todo userStats == ""?
+          showNextButton(stats);
+        });
+    })
+    .catch((err) => {
+      if (err.code != 404) {
+        throw err;
+      }
+
+      let stats = {
+        'id': userId,
+        'oks': 0,
+        'errors': 0,
+      }
+
+      if (correct) {
+        stats.oks += 1;
+      } else {
+        stats.errors += 1;
+      }
+
+      return data
+        .create('userStats', stats)
+        .then((userStats) => {
+          showNextButton(userStats);
+        });
+    });
+}
+
+function incrementQuestionStats(questionId, correct) {
+  return data
+    .get(`questionStats/${questionId}`)
+    .then((stats) => {
+      if (correct) {
+        stats.oks += 1;
+      } else {
+        stats.errors += 1;
+      }
+
       handleAnswerSubtitle(correct, stats);
 
-			return WeDeploy
-				.data('data.' + DOMAIN)
-				.update('questionStats/' + questionId, stats);
-		})
-		.catch(function(err) {
-			if (err.code == 404) {
-				var stats = {
-					'id' : questionId,
-					'oks' : 0,
-					'errors' : 0,
-				}
+      return data
+        .update(`questionStats/${questionId}`, stats);
+    })
+    .catch((err) => {
+      if (err.code == 404) {
+        let stats = {
+          id: questionId,
+          oks: 0,
+          errors: 0,
+        }
 
-				if (correct) {
-					stats.oks += 1;
-				}
-				else {
-					stats.errors += 1;
-				}
+        correct ? stats.oks += 1 : stats.errors += 1;
 
-				return WeDeploy
-					.data('data.' + DOMAIN)
-					.create('questionStats', stats);
-			}
-			throw err;
-		});
+        return data
+          .create('questionStats', stats);
+      }
+
+      throw err;
+    });
 }
 
 function showNextButton(userStats) {
-	// todo show next button
+  // todo show next button
 }
 
 function updateRanking(questionStats) {
-
   let correctRankingContainer = document.getElementById("ranking-correct");
   let correctBody = correctRankingContainer.querySelector('tbody');
+
   correctBody.innerHTML = '';
+
   var sortedOks = sortQuestions(questionStats, 'oks');
-	for (qs of sortedOks) {
+  for (qs of sortedOks) {
     findQuestionById(qs.id, correctBody);
   }
 
   let wrongRankingContainer = document.getElementById("ranking-wrong");
   let wrongBody = wrongRankingContainer.querySelector('tbody');
   wrongBody.innerHTML = '';
-	var sortedErrs = sortQuestions(questionStats, 'errors');
-	for (qs of sortedErrs) {
-    findQuestionById(qs.id, wrongBody);
-	}
 
+  let sortedErrs = sortQuestions(questionStats, 'errors');
+
+  for (qs of sortedErrs) {
+    findQuestionById(qs.id, wrongBody);
+  }
 }
 
+function getQuestions () {
+  return generator
+    .path('questions')
+    .param('random', 'true')
+    .get()
+    .then((clientResponse) => {
+      questions = clientResponse.body();
+
+      return questions;
+    });
+}
+
+
 function sortQuestions(questionStats, property) {
-	function compare(a,b) {
-        if (a[property] < b[property]) return -1;
-        if (a[property] > b[property]) return 1;
-    	return 0;
-    }
-    return questionStats.sort(compare).reverse();
+  const compare = (a,b) => {
+    if (a[property] < b[property]) return -1;
+    if (a[property] > b[property]) return 1;
+
+    return 0;
+  };
+
+  return questionStats.sort(compare).reverse();
 }
 
 function findQuestionById(id, body) {
-	for (q of questions) {
-		if (q.id == id) {
+  for (q of questions) {
+    if (q.id == id) {
       addRankingRow(q, body)
-			return q;
-		}
-	}
-	return null;
+      return q;
+    }
+  }
+  return null;
 }
 
 function addRankingRow(question, body) {
-  var innerHTML = '<tr>';
-  innerHTML += '<td>' + question.id + '</td>';
-  innerHTML += '<td class="left">' + question.text + '</td>';
-  innerHTML += '</tr>';
+  let innerHTML =
+    `<tr>
+      <td> ${question.id}</td>
+      <td class="left">${question.text}</td>
+    </tr>`;
+
   body.innerHTML += innerHTML;
 }
 
