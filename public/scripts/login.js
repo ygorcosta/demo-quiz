@@ -3,7 +3,7 @@ const auth = WeDeploy.auth('auth.' + DOMAIN);
 
 function signInWithEmailAndPassword() {
 	auth.signInWithEmailAndPassword(signIn.email.value, signIn.password.value)
-		.then(() => signIn.reset();)
+		.then(() => signIn.reset())
 		.catch(() => {
 			alert('Wrong email or password.');
 			signIn.reset();
