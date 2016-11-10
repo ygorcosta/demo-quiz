@@ -1,7 +1,11 @@
 const DOMAIN = window.location.hostname.split(".").slice(-3).join(".");
 
+const title = document.querySelector('.content-header.question #title');
+const grid = document.querySelector('.grid-quiz.question');
+
 const body = document.querySelector('body');
 const validation = document.getElementById('validation');
+const footer = document.querySelector('footer');
 const nextButton = document.querySelector('#next');
 
 var questions;
@@ -52,13 +56,28 @@ function showNextQuestion() {
 	}
 	var question = questions[qndx];
 	qndx = qndx + 1;
+
+	restartQuestionUI();
+
 	renderQuestion(question);
 }
 
+function restartQuestionUI() {
+	title.classList.remove('visible');
+
+	body.classList.remove('correct');
+	body.classList.remove('error');
+
+	grid.innerHTML = '';
+
+	footer.classList.remove('visible');
+}
+
 function renderQuestion(question) {
-	const title = document.querySelector('.content-header.question #title');
+	
 	title.innerHTML = question.text;
-	const grid = document.querySelector('.grid-quiz.question');
+	title.classList.add('visible');
+
 	question.answers.forEach(function(answer) {
 		renderAnswer(grid, answer);
 	});
@@ -74,12 +93,27 @@ function renderAnswer(component, answer) {
 }
 
 function success(event) {
-	validation.innerHTML = 'Correct!';
+	let validationTitle = validation.querySelector('h1');
+	validationTitle.innerHTML = 'Correct!';
+
+	let validationSubTitle = validation.querySelector('p');
+	validationSubTitle.innerHTML = '3123123 users have answered it correct too';
+
+	footer.classList.add('visible');
+
 	handleAnswer(event, true);
 }
 
 function error(event) {
-	validation.innerHTML = 'Wrong :(';
+
+	let validationTitle = validation.querySelector('h1');
+	validationTitle.innerHTML = 'Wrong :(';
+
+	let validationSubTitle = validation.querySelector('p');
+	validationSubTitle.innerHTML = '2 users have answered it wrong too';
+
+	footer.classList.add('visible');
+
 	handleAnswer(event, false);
 }
 

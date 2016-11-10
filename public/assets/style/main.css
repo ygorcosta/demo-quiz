@@ -445,6 +445,52 @@ QUIZ
 	}
 }
 
+.wrapper footer {
+	height: 120px;
+	padding-top: 24px;
+}
+
+.wrapper footer .btn {
+	opacity: 0;
+	display: none;
+	-webkit-animation: fadeInBottom 0.4s cubic-bezier(0.3, 0, 0.3, 1) 0.2s 1 orwards;
+	animation: fadeInBottom 0.4s cubic-bezier(0.3, 0, 0.3, 1) 0.2s 1 forwards;
+
+	height: 60px;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+	flex-direction: row;
+	-webkit-flex-wrap: nowrap;
+	-ms-flex-wrap: nowrap;
+	flex-wrap: nowrap;
+	-webkit-justify-content: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	-webkit-align-content: center;
+	-ms-flex-line-pack: center;
+	align-content: center;
+	-webkit-align-items: center;
+	-ms-flex-align: center;
+	align-items: center;
+}
+
+.wrapper footer.visible .btn {
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+}
+
+.wrapper footer .btn-next {
+	background: #fff;
+	box-shadow: 0 2px 8px rgba(14, 20, 26, 0.1);
+	color: rgba(14, 20, 26, 0.8);
+}
+
+.wrapper footer .btn-success:hover,
+.wrapper footer .btn-success:focus {
+	box-shadow: 0 2px 8px rgba(14, 20, 26, 0.2);
+}
+
 .grid-quiz {
 	width: calc(100% - 40px);
 	max-width: 680px;
@@ -457,10 +503,36 @@ QUIZ
 	width: 100%;
 	opacity: 0;
 
-	color: white;s
 	text-align: center;
-	letter-spacing: 0.003em;
 	margin: 0 auto;
+	bottom: 0;
+}
+
+.grid-quiz #validation h1 {
+	color: white;
+	letter-spacing: 0.003em;
+	padding: 0;
+}
+
+.grid-quiz #validation p {
+	font-size: 19px;
+	line-height: 24px;
+	padding: 12px 0 36px;
+	color: white;
+	letter-spacing: 0.003em;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+	.grid-quiz #validation p {
+		padding: 12px 0;
+	}
+}
+
+.grid-quiz #validation p strong {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 700;
 }
 
 body.correct #validation,
@@ -469,11 +541,17 @@ body.error #validation {
 	animation: fadeInBottom 0.4s cubic-bezier(0.3, 0, 0.3, 1) 0.2s 1 forwards;
 }
 
-body #title,
 body #title {
+	position: absolute;
 	opacity: 0;
+	display: none;
+	bottom: 0;
 	-webkit-animation: fadeInTop 0.4s cubic-bezier(0.3, 0, 0.3, 1) 0s 1 forwards;
 	animation: fadeInTop 0.4s cubic-bezier(0.3, 0, 0.3, 1) 0s 1 forwards;
+}
+
+body #title.visible {
+	display: block;
 }
 
 body.correct #title,
@@ -482,10 +560,16 @@ body.error #title {
 	animation: fadeOutTop 0.4s cubic-bezier(0.3, 0, 0.3, 1) 0s 1 forwards;
 }
 
+.content-header.question {
+	min-height: 120px;
+}
+
 .content-header.question h1 {
 	font-size: 48px;
-	line-height: 60px;
+	line-height: 48px;
 	padding: 24px 0;
+	text-align: center;
+	width: 100%;
 }
 
 @media (max-width: 1024px) {
