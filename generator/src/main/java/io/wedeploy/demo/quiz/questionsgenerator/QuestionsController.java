@@ -24,13 +24,14 @@ public class QuestionsController {
 			@RequestParam(value="random", defaultValue="true") boolean random,
 			@RequestParam(value="limit", required=false) Integer limit) {
 
-		List<Question> questionList = new ArrayList<>(questionService.getQuestions());
+		List<Question> questionList = questionService.getQuestions();
 
 		if (random) {
-			Collections.shuffle(questionList);
+			questionList = new ArrayList<>(questionList);
 
-			questionList
-				.forEach(question -> Collections.shuffle(question.getAnswers()));
+			questionList.forEach(
+				question -> Collections.shuffle(question.getAnswers()));
+			Collections.shuffle(questionList);
 		}
 
 		if (limit != null) {
@@ -43,4 +44,11 @@ public class QuestionsController {
 		return questionList;
 	}
 
+	@RequestMapping("/check")
+	public boolean check(
+		@RequestParam(value = "questionId") String questionId,
+		@RequestParam(value = "answerId") String answerId) {
+
+		return questionService.checkAnswer(questionId, answerId);
+	}
 }
