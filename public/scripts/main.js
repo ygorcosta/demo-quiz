@@ -14,8 +14,6 @@ var qndx = 0;
 function main() {
 	var currentUser = WeDeploy.auth('auth.' + DOMAIN).currentUser;
 
-	console.log(currentUser);
-
 	if (currentUser) {
 		WeDeploy
       .url('questions-generator.' + DOMAIN)
@@ -37,10 +35,33 @@ function main() {
 	  data.watch('questionStats')
 			.on('changes',(allQuestionStats) => updateRanking(allQuestionStats))
 			.on('fail', (error) => console.log(error));
+
+    console.log(currentUser);
+
+    if (currentUser.photoUrl) {
+      document.getElementById('userPhoto').src = currentUser.photoUrl;
+    }
+
+    if(currentUser.name) {
+      document.getElementById('userName').innerHTML = currentUser.name;
+      document.getElementById('userInitials').innerHTML = currentUser.name.charAt(0);
+    } else {
+      document.getElementById('userName').innerHTML = currentUser.email;
+      document.getElementById('userInitials').innerHTML = currentUser.email.charAt(0);
+    }
+
 	}
 	else {
 		window.location = "/login.html";
 	}
+}
+
+function signOut() {
+  WeDeploy.auth('auth.' + DOMAIN)
+    .signOut()
+    .then(function() {
+      location.href = 'login.html';
+    });
 }
 
 function showNextQuestion() {
