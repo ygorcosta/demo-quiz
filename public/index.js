@@ -22,7 +22,6 @@ let generator = WeDeploy.url(`generator.${DOMAIN}`);
 let questions = [];
 let qndx = 0;
 
-
 function main() {
   let { currentUser } = auth;
 
@@ -30,20 +29,10 @@ function main() {
     window.location = "/login";
   }
 
+  renderUser(currentUser);
+
   getQuestions()
-    .then(showNextQuestion);
-
-  if (currentUser.photoUrl) {
-    ELEMS.userPhoto.src = currentUser.photoUrl;
-  }
-
-  if(auth.currentUser.name) {
-    ELEMS.userName.innerHTML = currentUser.name;
-    ELEMS.userInitials.innerHTML = currentUser.name.charAt(0);
-  } else {
-    ELEMS.userName.innerHTML = currentUser.email;
-    ELEMS.userInitials.innerHTML = currentUser.email.charAt(0);
-  }
+    .then(showNextQuestion);  
 }
 
 function signOut() {
@@ -74,6 +63,20 @@ function restartQuestionUI() {
   ELEMS.grid.innerHTML = '';
 
   ELEMS.footer.classList.remove('visible');
+}
+
+function renderUser(user) {
+  if (user.photoUrl) {
+    ELEMS.userPhoto.src = user.photoUrl;
+  }
+
+  if(user.name) {
+    ELEMS.userName.innerHTML = user.name;
+    ELEMS.userInitials.innerHTML = user.name.charAt(0);
+  } else {
+    ELEMS.userName.innerHTML = user.email;
+    ELEMS.userInitials.innerHTML = user.email.charAt(0);
+  }
 }
 
 function renderQuestion(question) {
@@ -111,11 +114,11 @@ function error(event) {
   handleAnswer(event, false);
 }
 
-function handleAnswerSubtitle (correct, stats) {
+function handleAnswerSubtitle (isCorrect, stats) {
   let validationSubTitle = validation.querySelector('p');
 
     validationSubTitle.innerHTML =
-    `This question was answered <span>${correct ? stats.oks : stats.errors}</span> times correctly.`;
+    `This question was answered <span>${isCorrect ? stats.oks : stats.errors}</span> times correctly.`;
 }
 
 function handleAnswer(event, isCorrect) {
@@ -137,7 +140,7 @@ function handleAnswer(event, isCorrect) {
     idxQuestion = questions[qndx - 1]
   }
 
-  incrementQuestionStats(idxQuestion.id, isCorrect);
+  storeAnswer(idxQuestion.id, isCorrect);
 }
 
 function incrementUserStats(userId, correct) {
@@ -183,63 +186,14 @@ function incrementUserStats(userId, correct) {
     });
 }
 
-function incrementQuestionStats(questionId, correct) {
+function storeAnswer(questionId, isCorrect) {
   return data
-    .get(`questionStats/${questionId}`)
-    .then((stats) => {
-      if (correct) {
-        stats.oks += 1;
-      } else {
-        stats.errors += 1;
-      }
-
-      handleAnswerSubtitle(correct, stats);
-
-      return data
-        .update(`questionStats/${questionId}`, stats);
-    })
-    .catch((err) => {
-      if (err.code == 404) {
-        let stats = {
-          id: questionId,
-          oks: 0,
-          errors: 0,
-        }
-
-        correct ? stats.oks += 1 : stats.errors += 1;
-
-        return data
-          .create('questionStats', stats);
-      }
-
-      throw err;
+    .create('answers', {
+      questionId: questionId,
+      userId: auth.currentUser.id,
+      correct: isCorrect,
+      timestamp: new Date()
     });
-}
-
-function showNextButton(userStats) {
-  // todo show next button
-}
-
-function updateRanking(questionStats) {
-  let correctRankingContainer = document.getElementById("ranking-correct");
-  let correctBody = correctRankingContainer.querySelector('tbody');
-
-  correctBody.innerHTML = '';
-
-  var sortedOks = sortQuestions(questionStats, 'oks');
-  for (qs of sortedOks) {
-    findQuestionById(qs.id, correctBody);
-  }
-
-  let wrongRankingContainer = document.getElementById("ranking-wrong");
-  let wrongBody = wrongRankingContainer.querySelector('tbody');
-  wrongBody.innerHTML = '';
-
-  let sortedErrs = sortQuestions(questionStats, 'errors');
-
-  for (qs of sortedErrs) {
-    findQuestionById(qs.id, wrongBody);
-  }
 }
 
 function getQuestions () {
@@ -252,38 +206,6 @@ function getQuestions () {
 
       return questions;
     });
-}
-
-
-function sortQuestions(questionStats, property) {
-  const compare = (a,b) => {
-    if (a[property] < b[property]) return -1;
-    if (a[property] > b[property]) return 1;
-
-    return 0;
-  };
-
-  return questionStats.sort(compare).reverse();
-}
-
-function findQuestionById(id, body) {
-  for (q of questions) {
-    if (q.id == id) {
-      addRankingRow(q, body)
-      return q;
-    }
-  }
-  return null;
-}
-
-function addRankingRow(question, body) {
-  let innerHTML =
-    `<tr>
-      <td> ${question.id}</td>
-      <td class="left">${question.text}</td>
-    </tr>`;
-
-  body.innerHTML += innerHTML;
 }
 
 main();
