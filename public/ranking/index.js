@@ -1,24 +1,21 @@
 'use strict';
 
 const DOMAIN = window.location.hostname.split(".").slice(-3).join(".");
-const auth = WeDeploy.auth('auth.' + DOMAIN);
-const data = WeDeploy.data('data.' + DOMAIN);
+const authData = WeDeploy.data(`auth.${DOMAIN}`);
+const userTable = document.getElementById('user-ranking');
 
 function main() {
-	data
-		.orderBy('oks', 'desc')
-		.get('userStats')
-		.then(function(stats) {
-			for (s of stats) {
-				auth
-					.getUser(s.id)
-					.then((user) => {
-						console.log(user.name);
-					}
-				);
-			}
-		});
+  authData
+    .orderBy('correctAnswers', 'desc')
+    .limit(10)
+    .get('users')
+    .then(function(users) {
+      users.forEach(renderUser);
+    });
+}
 
+function renderUser(user, index) {
+	userTable.innerHtml += `<tr><td>${index}</td><td>${user.name ? user.name : user.email}</td><td>${user.correctAnswers}</td></tr>`;
 }
 
 main();
