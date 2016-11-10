@@ -32,7 +32,7 @@ function main() {
   renderUser(currentUser);
 
   getQuestions()
-    .then(showNextQuestion);  
+    .then(showNextQuestion);
 }
 
 function signOut() {
@@ -85,22 +85,38 @@ function renderQuestion(question) {
 
   question
     .answers
-    .forEach((answer) => renderAnswer(ELEMS.grid, answer));
+    .forEach((answer) => renderAnswer(ELEMS.grid, question, answer));
 }
 
-function renderAnswer(component, answer) {
+function renderAnswer(component, question, answer) {
   component.innerHTML += `
     <section class="half">
-     <div onclick=" ${answer.correct ? 'success' : 'error'}(this)" class="content-body clickable flex-column-center-center">
+     <div onclick="checkAnswer(this, ${question.id}, ${answer.id})" class="content-body clickable flex-column-center-center">
        <h3>${answer.text}</h3>
        <p>${answer.description}</p>
      </div>
     </section>`;
 }
 
+function checkAnswer(event, questionId, answerId) {
+  generator
+    .path('check')
+    .param('questionId', questionId)
+    .param('answerId', answerId)
+    .get()
+    .then((response) => {
+      let isSuccess = response.body;
+
+      if (isSuccess) {
+        success(event);
+      } else {
+        error(event);
+      }
+    });
+}
+
 function success(event) {
   let validationTitle = validation.querySelector('h1');
-
   validationTitle.innerHTML = 'Correct!';
   ELEMS.footer.classList.add('visible');
   handleAnswer(event, true);
@@ -140,8 +156,18 @@ function handleAnswerSubTitle(questionId) {
       let validationSubTitle = validation.querySelector('p');
       let aggregations = result.aggregations.dist;
 
-      validationSubTitle.innerHTML = `This question was answered ${aggregations['1']} times correctly `;
-      validationSubTitle.innerHTML += `and ${aggregations['0']} times wrong.`;
+      var x = aggregations['1'];
+      var y = aggregations['0'];
+
+      if (x === undefined) {
+        x = 0;
+      }
+      if (y === undefined) {
+        y = 0;
+      }
+
+      validationSubTitle.innerHTML = `This question was answered ${x} times correctly `;
+      validationSubTitle.innerHTML += `and ${y} times wrong.`;
     });
 }
 
