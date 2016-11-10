@@ -10,11 +10,13 @@ const nextButton = document.querySelector('#next');
 
 var questions;
 var qndx = 0;
+var currentUserId;
 
 function main() {
 	var currentUser = WeDeploy.auth('auth.' + DOMAIN).currentUser;
 
 	if (currentUser) {
+		currentUserId = currentUser.id;
 		WeDeploy
       .url('generator.' + DOMAIN)
       .path('questions')
@@ -144,7 +146,9 @@ function handleAnswer(event, isCorrect) {
 	const otherCard = card.parentNode.querySelector('.half:not(.' + className + ')');
 	otherCard.style.display = 'none';
 
-	incrementUserStats('userNN', isCorrect);
+	if (currentUserId != undefined) {
+		incrementUserStats(currentUserId, isCorrect);
+	}
 
   let idxQuestion = questions[qndx];
 
