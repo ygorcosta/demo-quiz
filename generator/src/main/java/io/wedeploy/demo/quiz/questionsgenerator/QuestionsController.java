@@ -23,38 +23,26 @@ public class QuestionsController {
 	public List<Question> questions(
 			@RequestParam(value="random", defaultValue="true") boolean random) {
 
-		List<Question> questionList = new ArrayList<>();
-
-		QuestionIdGenerator questionIdGenerator = new QuestionIdGenerator(100);
-
-		questionService.getQuestionsAndAnswers().forEach((List<?> data) -> {
-			List<Answer> answers = new ArrayList<>(data.size() - 1);
-
-			for (int i = 1; i < data.size(); i++) {
-				List<String> arrayAndDescription = (List<String>) data.get(i);
-
-				answers.add(new Answer(
-					arrayAndDescription.get(0),
-					arrayAndDescription.get(1),
-					i == 1));
-			}
-
-			if (random) {
-				Collections.shuffle(answers);
-			}
-
-			int id = questionIdGenerator.nextId();
-
-			questionList.add(
-				new Question(id, (String)data.get(0), answers));
-		});
+		List<Question> questionList = questionService.getQuestions();
 
 		if (random) {
+			questionList = new ArrayList<>(questionList);
+
+			questionList.forEach(
+				question -> Collections.shuffle(question.getAnswers()));
 			Collections.shuffle(questionList);
 		}
 
 		log.debug("Questions provided: " + questionList.size());
 
 		return questionList;
+	}
+
+	@RequestMapping("/check")
+	public boolean check(
+		@RequestParam(value = "questionId") String questionId,
+		@RequestParam(value = "answerId") String answerId) {
+
+		return questionService.checkAnswer(questionId, answerId);
 	}
 }
