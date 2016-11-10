@@ -17,5 +17,5 @@ function resetPassword() {
 }
 
 function closeAlert() {
-  location.href = '/login.html';
+  location.href = '/login';
 }
