@@ -114,13 +114,6 @@ function error(event) {
   handleAnswer(event, false);
 }
 
-function handleAnswerSubtitle (isCorrect, stats) {
-  let validationSubTitle = validation.querySelector('p');
-
-    validationSubTitle.innerHTML =
-    `This question was answered <span>${isCorrect ? stats.oks : stats.errors}</span> times correctly.`;
-}
-
 function handleAnswer(event, isCorrect) {
   const className = isCorrect ? 'correct' : 'error'
   ELEMS.body.classList.add(className);
@@ -133,14 +126,23 @@ function handleAnswer(event, isCorrect) {
 
   incrementUserStats(isCorrect);
 
-  let idxQuestion = questions[qndx];
-
-  // TODO: If questions = 0. Show something different on UI.
-  if (qndx > 0) {
-    idxQuestion = questions[qndx - 1]
-  }
-
+  let idxQuestion = questions[qndx-1];
   storeAnswer(idxQuestion.id, isCorrect);
+}
+
+function handleAnswerSubTitle(questionId) {
+  data
+    .where('questionId', questionId)
+    .aggregate('dist', 'correct', 'terms')
+    .count()
+    .get('answers')
+    .then((result) => {
+      let validationSubTitle = validation.querySelector('p');
+      let aggregations = result.aggregations.dist;
+
+      validationSubTitle.innerHTML = `This question was answered ${aggregations['1']} times correctly `;
+      validationSubTitle.innerHTML += `and ${aggregations['0']} times wrong.`;
+    });
 }
 
 function incrementUserStats(isCorrect) {
@@ -169,6 +171,9 @@ function storeAnswer(questionId, isCorrect) {
       userId: auth.currentUser.id,
       correct: isCorrect,
       timestamp: new Date()
+    })
+    .then((response) => {
+      handleAnswerSubTitle(questionId, isCorrect);
     });
 }
 
