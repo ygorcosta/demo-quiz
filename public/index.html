@@ -1,94 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>devQA :: Quiz</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>devQA :: Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:900,700,600,400,300">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:900,700,600,400,300">
 
-	<link rel="stylesheet" type="text/css" href="assets/style/reset.css">
-	<link rel="stylesheet" type="text/css" href="assets/style/fonts/galano/galano.css">
-	<link rel="stylesheet" type="text/css" href="assets/style/fonts/icon-12/icon-12.css">
-	<link rel="stylesheet" type="text/css" href="assets/style/fonts/icon-16/icon-16.css">
-	<link rel="stylesheet" type="text/css" href="assets/style/main.css">
+  <link rel="stylesheet" type="text/css" href="assets/style/reset.css">
+  <link rel="stylesheet" type="text/css" href="assets/style/fonts/galano/galano.css">
+  <link rel="stylesheet" type="text/css" href="assets/style/fonts/icon-12/icon-12.css">
+  <link rel="stylesheet" type="text/css" href="assets/style/fonts/icon-16/icon-16.css">
+  <link rel="stylesheet" type="text/css" href="assets/style/main.css">
 
 </head>
 <body class="blue">
-	<div class="content">
-		<div class="wrapper ranking-offset flex-column-center-center">
-			<header class="grid-quiz">
-				<div class="content-header question">
-					<div id="validation">
-						<h1></h1>
-						<p></p>
-					</div>
-					<h1 id="title"></h1>
-				</div>
-			</header>
+  <div class="content">
+    <div class="wrapper ranking-offset flex-column-center-center">
+      <header class="grid-quiz">
+        <div class="content-header question">
+          <div id="validation">
+            <h1></h1>
+            <p></p>
+          </div>
+          <h1 id="title"></h1>
+        </div>
+      </header>
 
-			<main class="grid-quiz question">
-			</main>
+      <main class="grid-quiz question">
+      </main>
 
-			<footer> 
-				<button id="next" onclick="showNextQuestion();" class="btn btn-next">Next</button>
-			</footer>
-		</div>
+      <footer>
+        <button id="next" onclick="showNextQuestion();" class="btn btn-next">Next</button>
+      </footer>
+    </div>
 
-		<div id="ranking" class="ranking">
-			<header>
-				<div class="content-header">
-					<a href="#ranking"><h1>Ranking</h1></a>
-				</div>
-			</header>
+    <div class="ranking-container flex-column-top-center">
 
-			<table>
-				<thead>
-					<tr>
-						<th width="10%">
-							#
-						</th>
-						<th width="60%">
-							Name
-						</th>
-						<th width="30%">
-							Points
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td>John Malkovich</td>
-						<td>3929319</td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>Barack Obama</td>
-						<td>3830123</td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>Martha Stewart</td>
-						<td>3749040</td>
-					</tr>
-					<tr>
-						<td>4</td>
-						<td>Morgan Freeman</td>
-						<td>3684938</td>
-					</tr>
-					<tr>
-						<td>5</td>
-						<td>Xuxa Meneghel</td>
-						<td>3508403</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+      <div id="ranking-correct" class="ranking">
+        <header>
+          <div class="content-header">
+            <a href="#ranking-correct"><h1>Correct Answers</h1></a>
+          </div>
+        </header>
+        <table>
+          <thead>
+            <tr>
+              <th width="20%">
+                #
+              </th>
+              <th width="80%" class="left">
+                Question
+              </th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-	<script src="http://cdn.wedeploy.com/api/latest/wedeploy.js"></script>
-	<script type="text/javascript" src="scripts/main.js"></script>
+      <div id="ranking-wrong" class="ranking">
+        <header>
+          <div class="content-header">
+            <a href="#ranking-wrong"><h1>Wrong Answers</h1></a>
+          </div>
+        </header>
+        <table>
+          <thead>
+            <tr>
+              <th width="20%">
+                #
+              </th>
+              <th width="80%" class="left">
+                Question
+              </th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="http://cdn.wedeploy.com/api/latest/wedeploy.js"></script>
+  <script type="text/javascript" src="scripts/main.js"></script>
 
 </body>
 </html>

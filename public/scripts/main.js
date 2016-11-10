@@ -222,15 +222,23 @@ function showNextButton(userStats) {
 }
 
 function updateRanking(questionStats) {
-	var sortedOks = sortQuestions(questionStats, 'oks');
+
+  let correctRankingContainer = document.getElementById("ranking-correct");
+  let correctBody = correctRankingContainer.querySelector('tbody');
+  correctBody.innerHTML = '';
+  var sortedOks = sortQuestions(questionStats, 'oks');
 	for (qs of sortedOks) {
-		console.log(findQuestionById(qs.id).text);
-	}
-	console.log("-------------------");
+    findQuestionById(qs.id, correctBody);
+  }
+
+  let wrongRankingContainer = document.getElementById("ranking-wrong");
+  let wrongBody = wrongRankingContainer.querySelector('tbody');
+  wrongBody.innerHTML = '';
 	var sortedErrs = sortQuestions(questionStats, 'errors');
 	for (qs of sortedErrs) {
-		console.log(findQuestionById(qs.id).text);
+    findQuestionById(qs.id, wrongBody);
 	}
+
 }
 
 function sortQuestions(questionStats, property) {
@@ -242,13 +250,22 @@ function sortQuestions(questionStats, property) {
     return questionStats.sort(compare).reverse();
 }
 
-function findQuestionById(id) {
+function findQuestionById(id, body) {
 	for (q of questions) {
 		if (q.id == id) {
+      addRankingRow(q, body)
 			return q;
 		}
 	}
 	return null;
+}
+
+function addRankingRow(question, body) {
+  var innerHTML = '<tr>';
+  innerHTML += '<td>' + question.id + '</td>';
+  innerHTML += '<td class="left">' + question.text + '</td>';
+  innerHTML += '</tr>';
+  body.innerHTML += innerHTML;
 }
 
 main();
