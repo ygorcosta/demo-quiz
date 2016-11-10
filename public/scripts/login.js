@@ -1,13 +1,20 @@
 const DOMAIN = window.location.hostname.split(".").slice(-3).join(".");
 const auth = WeDeploy.auth('auth.' + DOMAIN);
+const alert = document.getElementById('alert');
 
 function signInWithEmailAndPassword() {
 	auth.signInWithEmailAndPassword(signIn.email.value, signIn.password.value)
 		.then(() => signIn.reset())
 		.catch(() => {
-			alert('Wrong email or password.');
+      alert.innerHTML = '<p>Wrong email or password.</p>';
+			alert.innerHTML += '<button><span class="close icon-12-close-short" onclick="closeAlert()"></span></button>';
+      alert.classList.add('visible');
 			signIn.reset();
 		});
+}
+
+function closeAlert() {
+  alert.classList.remove('visible');
 }
 
 function signInWithGithub() {
