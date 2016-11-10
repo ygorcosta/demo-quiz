@@ -131,7 +131,7 @@ function handleAnswer(event, isCorrect) {
   const otherCard = card.parentNode.querySelector(`.half:not(.${className})`);
   otherCard.style.display = 'none';
 
-  incrementUserStats(auth.currentUser.id, isCorrect);
+  incrementUserStats(isCorrect);
 
   let idxQuestion = questions[qndx];
 
@@ -143,46 +143,22 @@ function handleAnswer(event, isCorrect) {
   storeAnswer(idxQuestion.id, isCorrect);
 }
 
-function incrementUserStats(userId, correct) {
-  return data
-    .get(`userStats/${userId}`)
-    .then((stats) => {
-      if (correct) {
-        stats.oks += 1;
+function incrementUserStats(isCorrect) {
+  return auth
+    .getUser(auth.currentUser.id)
+    .then((user) => {
+      let stats = {};
+
+      if (isCorrect) {
+        stats.correctAnswers = (user.correctAnswers || 0) + 1;
       }
       else {
-        stats.errors += 1;
+        stats.wrongAnswers = (user.wrongAnswers || 0) + 1;;
       }
 
-      return data
-        .update(`userStats/${userId}`, stats)
-        .then((userStats) => {
-          // todo userStats == ""?
-          showNextButton(stats);
-        });
-    })
-    .catch((err) => {
-      if (err.code != 404) {
-        throw err;
-      }
-
-      let stats = {
-        'id': userId,
-        'oks': 0,
-        'errors': 0,
-      }
-
-      if (correct) {
-        stats.oks += 1;
-      } else {
-        stats.errors += 1;
-      }
-
-      return data
-        .create('userStats', stats)
-        .then((userStats) => {
-          showNextButton(userStats);
-        });
+      return auth
+        .currentUser
+        .updateUser(stats);
     });
 }
 
