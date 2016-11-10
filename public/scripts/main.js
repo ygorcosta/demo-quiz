@@ -110,9 +110,6 @@ function success(event) {
 	let validationTitle = validation.querySelector('h1');
 	validationTitle.innerHTML = 'Correct!';
 
-	let validationSubTitle = validation.querySelector('p');
-	validationSubTitle.innerHTML = '3123123 users have answered it correct too';
-
 	footer.classList.add('visible');
 
 	handleAnswer(event, true);
@@ -123,12 +120,18 @@ function error(event) {
 	let validationTitle = validation.querySelector('h1');
 	validationTitle.innerHTML = 'Wrong :(';
 
-	let validationSubTitle = validation.querySelector('p');
-	validationSubTitle.innerHTML = '2 users have answered it wrong too';
-
 	footer.classList.add('visible');
 
 	handleAnswer(event, false);
+}
+
+function handleAnswerSubtitle (correct, stats) {
+  let validationSubTitle = validation.querySelector('p');
+  if(correct)
+    validationSubTitle.innerHTML = 'This question was answered <span>' + stats.oks + '</span> times correctly.';
+  else
+    validationSubTitle.innerHTML = 'This question was answered <span>' + stats.errors + '</span> times wrong.';
+
 }
 
 function handleAnswer(event, isCorrect) {
@@ -206,10 +209,12 @@ function incrementQuestionStats(questionId, correct) {
 		.then(function(stats) {
 			if (correct) {
 				stats.oks += 1;
-			}
-			else {
-				stats.errors += 1;
-			}
+      }
+      else {
+        stats.errors += 1;
+      }
+
+      handleAnswerSubtitle(correct, stats);
 
 			return WeDeploy
 				.data('data.' + DOMAIN)
