@@ -1,4 +1,4 @@
-package com.wedeploy.demo.quiz.questionsgenerator;
+package io.wedeploy.demo.quiz.questionsgenerator;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

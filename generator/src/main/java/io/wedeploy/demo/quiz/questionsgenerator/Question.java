@@ -1,4 +1,4 @@
-package com.wedeploy.demo.quiz.questionsgenerator;
+package io.wedeploy.demo.quiz.questionsgenerator;
 
 import java.util.List;
 

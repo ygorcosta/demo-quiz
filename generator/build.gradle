@@ -1,5 +1,5 @@
 
-group 'com.wedeploy'
+group 'io.wedeploy.demo'
 version '1.0-SNAPSHOT'
 
 

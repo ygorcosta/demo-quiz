@@ -18,7 +18,7 @@ function main() {
 
 	if (currentUser) {
 		WeDeploy
-      .url('questions-generator.' + DOMAIN)
+      .url('generator.' + DOMAIN)
       .path('questions')
       .param('random', 'true')
       .get()

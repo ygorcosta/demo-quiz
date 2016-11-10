@@ -1,4 +1,4 @@
-package com.wedeploy.demo.quiz.questionsgenerator;
+package io.wedeploy.demo.quiz.questionsgenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;

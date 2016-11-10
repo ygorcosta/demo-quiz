@@ -1,4 +1,4 @@
-package com.wedeploy.demo.quiz.questionsgenerator;
+package io.wedeploy.demo.quiz.questionsgenerator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

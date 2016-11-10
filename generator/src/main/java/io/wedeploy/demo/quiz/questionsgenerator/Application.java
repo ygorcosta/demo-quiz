@@ -1,4 +1,4 @@
-package com.wedeploy.demo.quiz.questionsgenerator;
+package io.wedeploy.demo.quiz.questionsgenerator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
