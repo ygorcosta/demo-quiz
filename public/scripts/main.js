@@ -18,32 +18,25 @@ function main() {
 
 	if (currentUser) {
 		WeDeploy
-		    .url('questions-generator.' + DOMAIN)
-		    .path('questions')
-		    .param('random', 'true')
-		    .get()
-		    .then(function(clientResponse) {
-				questions = clientResponse.body();
-				showNextQuestion();
-		    });
+      .url('questions-generator.' + DOMAIN)
+      .path('questions')
+      .param('random', 'true')
+      .get()
+      .then(function(clientResponse) {
+        questions = clientResponse.body();
+        showNextQuestion();
+      });
 
-		WeDeploy
-			.data('data.' + DOMAIN)
-			.get('questionStats')
-			.then(function(allQuestionStats) {
-	  			qdata = allQuestionStats;
+    const data = WeDeploy.data('data.' + DOMAIN)
+
+		data.get('questionStats')
+			.then((allQuestionStats) => {
 	  			updateRanking(allQuestionStats);
 			});
 
-		WeDeploy
-			.data('data.' + DOMAIN)
-			.watch('questionStats')
-			.on('changes', function(allQuestionStats){
-			   updateRanking(allQuestionStats);
-			})
-			.on('fail', function(error){
-			   console.log(error);
-			});
+	  data.watch('questionStats')
+			.on('changes',(allQuestionStats) => updateRanking(allQuestionStats))
+			.on('fail', (error) => console.log(error));
 	}
 	else {
 		window.location = "/login.html";
@@ -54,7 +47,8 @@ function showNextQuestion() {
 	if (qndx == questions.length) {
 		qndx = 0;
 	}
-	var question = questions[qndx];
+
+	let question = questions[qndx];
 	qndx = qndx + 1;
 
 	restartQuestionUI();
@@ -74,13 +68,12 @@ function restartQuestionUI() {
 }
 
 function renderQuestion(question) {
-	
+	let title = document.querySelector('.content-header.question #title');
 	title.innerHTML = question.text;
 	title.classList.add('visible');
 
-	question.answers.forEach(function(answer) {
-		renderAnswer(grid, answer);
-	});
+	const grid = document.querySelector('.grid-quiz.question');
+	question.answers.forEach((answer) => renderAnswer(grid, answer));
 }
 
 function renderAnswer(component, answer) {
@@ -118,15 +111,18 @@ function error(event) {
 }
 
 function handleAnswer(event, isCorrect) {
-	var className = isCorrect ? 'correct' : 'error'
+	const className = isCorrect ? 'correct' : 'error'
 	body.classList.add(className);
+
 	const card = event.parentNode;
 	card.classList.add(className);
+
 	const otherCard = card.parentNode.querySelector('.half:not(.' + className + ')');
 	otherCard.style.display = 'none';
 
 	incrementUserStats('userNN', isCorrect);
-	var qid = questions[qndx].id;
+
+	const qid = questions[qndx].id;
 	incrementQuestionStats(qid, isCorrect);
 }
 
@@ -152,7 +148,7 @@ function incrementUserStats(userId, correct) {
 		})
 		.catch(function(err) {
 			if (err.code == 404) {
-				var stats = {
+				let stats = {
 					'id' : userId,
 					'oks' : 0,
 					'errors' : 0,
