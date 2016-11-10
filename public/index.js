@@ -1,3 +1,5 @@
+'use strict';
+
 const DOMAIN = window.location.hostname.split(".").slice(-3).join(".");
 
 const title = document.querySelector('.content-header.question #title');

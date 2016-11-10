@@ -1,3 +1,5 @@
+'use strict';
+
 const DOMAIN = window.location.hostname.split(".").slice(-3).join(".");
 const auth = WeDeploy.auth('auth.' + DOMAIN);
 const data = WeDeploy.data('data.' + DOMAIN);
