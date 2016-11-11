@@ -184,7 +184,8 @@ function incrementUserStats(isCorrect) {
       let userStats = {
         id: auth.currentUser.id,
         correctAnswers: (isCorrect ? 1 : 0),
-        wrongAnswers: (isCorrect ? 0 : 1)
+        wrongAnswers: (isCorrect ? 0 : 1),
+        email: auth.currentUser.email
       };
 
       return data.create(`users`, userStats);

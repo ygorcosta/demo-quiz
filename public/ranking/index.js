@@ -20,20 +20,16 @@ function main() {
 }
 
 function renderUser(userStats, index) {
-	auth
-	  .getUser(userStats.id)
-	  .then((user) => {
-	  	let row = userTable.insertRow(index);
-      
-      let positionCell = row.insertCell(0);
-      positionCell.innerHTML = `${index+1}`;
+	let row = userTable.insertRow(-1);
+  
+  let positionCell = row.insertCell(0);
+  positionCell.innerHTML = index+1;
 
-      let nameCell = row.insertCell(1);
-      nameCell.innerHTML = `${user.name ? user.name : user.email}`;
-	  	
-      let pointsCell = row.insertCell(2);
-      pointsCell.innerHTML = `${userStats.correctAnswers}`;
-	  });
+  let nameCell = row.insertCell(1);
+  nameCell.innerHTML = userStats.email;
+	
+  let pointsCell = row.insertCell(2);
+  pointsCell.innerHTML = userStats.correctAnswers;
 }
 
 main();
