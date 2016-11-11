@@ -156,37 +156,38 @@ function handleAnswerSubTitle(questionId) {
       let validationSubTitle = validation.querySelector('p');
       let aggregations = result.aggregations.dist;
 
-      var x = aggregations['1'];
-      var y = aggregations['0'];
+      var correctCount = aggregations['1'] || 0;
+      var wrongCount = aggregations['0'] || 0;
 
-      if (x === undefined) {
-        x = 0;
-      }
-      if (y === undefined) {
-        y = 0;
-      }
-
-      validationSubTitle.innerHTML = `This question was answered ${x} times correctly `;
-      validationSubTitle.innerHTML += `and ${y} times wrong.`;
+      validationSubTitle.innerHTML = `This question was answered`;
+      validationSubTitle.innerHTML += ` ${correctCount} time${correctCount > 1 ? 's' : ''} correctly`;
+      validationSubTitle.innerHTML += ` and ${wrongCount} time${wrongCount > 1 ? 's' : ''} wrong.`;
     });
 }
 
 function incrementUserStats(isCorrect) {
-  return auth
-    .getUser(auth.currentUser.id)
-    .then((user) => {
-      let stats = {};
+  let data = WeDeploy.data(`data.${DOMAIN}`);
 
+  return data
+    .get(`users/${auth.currentUser.id}`)
+    .then((userStats) => {
       if (isCorrect) {
-        stats.correctAnswers = (user.correctAnswers || 0) + 1;
+        userStats.correctAnswers += 1;
       }
       else {
-        stats.wrongAnswers = (user.wrongAnswers || 0) + 1;;
+        userStats.wrongAnswers += 1;
       }
 
-      return auth
-        .currentUser
-        .updateUser(stats);
+      return data.update(`users/${auth.currentUser.id}`, userStats);
+    })
+    .catch((error) => {
+      let userStats = {
+        id: auth.currentUser.id,
+        correctAnswers: (isCorrect ? 1 : 0),
+        wrongAnswers: (isCorrect ? 0 : 1)
+      };
+
+      return data.create(`users`, userStats);
     });
 }
 
@@ -208,6 +209,7 @@ function getQuestions () {
   return generator
     .path('questions')
     .param('random', 'true')
+    .param('limit', 3)
     .get()
     .then((clientResponse) => {
       questions = clientResponse.body();
