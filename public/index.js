@@ -104,7 +104,7 @@ function checkAnswer(event, questionId, answerId) {
     .param('answerId', answerId)
     .get()
     .then((response) => {
-      let isSuccess = response.body;
+      let isSuccess = response.body();
 
       if (isSuccess) {
         success(event);
