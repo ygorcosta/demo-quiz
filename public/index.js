@@ -16,7 +16,6 @@ const ELEMS = {
 };
 
 let auth = WeDeploy.auth(`auth.${DOMAIN}`);
-let data = WeDeploy.data(`data.${DOMAIN}`);
 let generator = WeDeploy.url(`generator.${DOMAIN}`);
 
 let questions = [];
@@ -147,7 +146,8 @@ function handleAnswer(event, isCorrect) {
 }
 
 function handleAnswerSubTitle(questionId) {
-  data
+  WeDeploy
+    .data(`data.${DOMAIN}`)
     .where('questionId', questionId)
     .aggregate('dist', 'correct', 'terms')
     .count()
@@ -191,7 +191,8 @@ function incrementUserStats(isCorrect) {
 }
 
 function storeAnswer(questionId, isCorrect) {
-  return data
+  return WeDeploy
+    .data(`data.${DOMAIN}`)
     .create('answers', {
       questionId: questionId,
       userId: auth.currentUser.id,
